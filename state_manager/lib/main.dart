@@ -117,10 +117,17 @@ class _CounterTileState extends State<CounterTile> {
   @override
   Widget build(BuildContext context) {
 
-    // Select only the fields we need for this tile — makes rebuilds local
-    final title = context.select<GlobalState, String>((s) => s.counters.firstWhere((c) => c.id == widget.counterId).title);
-    final value = context.select<GlobalState, int>((s) => s.counters.firstWhere((c) => c.id == widget.counterId).value);
-    final color = context.select<GlobalState, Color>((s) => s.counters.firstWhere((c) => c.id == widget.counterId).color);
+    final title = context.select<GlobalState, String?>(
+      (s) => s.getCounterById(widget.counterId)?.title,
+    );
+    final value = context.select<GlobalState, int?>(
+      (s) => s.getCounterById(widget.counterId)?.value,
+    );
+    final color = context.select<GlobalState, Color?>(
+      (s) => s.getCounterById(widget.counterId)?.color,
+    );
+
+    if (title == null || value == null || color == null) return const SizedBox.shrink();
 
     // sync controller text if changed externally
     if (_controller.text != title) _controller.text = title;
@@ -139,7 +146,7 @@ class _CounterTileState extends State<CounterTile> {
           ),
           const SizedBox(width: 12),
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 500),
             transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
             child: Text(
               '$value',

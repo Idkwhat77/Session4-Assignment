@@ -78,4 +78,11 @@ class GlobalState extends ChangeNotifier {
     _counters.insert(newIndex, counter);
     notifyListeners();
   }
+
+  Counter? getCounterById(String id) {
+    for (final c in _counters) {
+      if (c.id == id) return c;
+    }
+    return null;
+  }
 }
